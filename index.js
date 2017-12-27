@@ -105,6 +105,11 @@ io.on("connection", (socket) => {
         if (game) {
             // quit the game
             game.status.users = playersController.removePlayer(socket.id)
+            if (io.engine.clientsCount < 1){
+                game.endGame();
+                // set the game to an empty initial state
+                game = new Game(io);
+            }
         }
     });
 

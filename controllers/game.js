@@ -115,7 +115,7 @@ class Game {
             clearInterval(this.status.interval);
             this.status.interval = null;
         }
-        this.socket.io.sockets.emit("data", this.status)
+        this.socket.io.sockets.emit("data", this.status);
     }
 
 }

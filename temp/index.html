@@ -14,7 +14,7 @@
 <br>
 <div id="submissions" style="display:none;"></div>
 <hr>
-<input id="alias" type="text"><br>
+<input id="alias" type="text"><button id="aliasButton">Join</button><br>
 <div id="cards" style="display:none;"></div>
 <br>
 <div id="type" style="display:none;"></div>
@@ -99,8 +99,8 @@
     })
 
 
-    $("#alias").click(function () {
-        socket.emit("alias", $(this).val())
+    $("#aliasButton").click(function () {
+        socket.emit("alias", $("#alias").val())
     })
 
 
