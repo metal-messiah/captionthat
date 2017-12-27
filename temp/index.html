@@ -98,6 +98,7 @@
         console.log(data);
         if (data.success) {
             $("#image, #timer, #submissions, #cards, #type").show();
+            $("#alias, #aliasButton").hide();
         }
         else {
             alert("Username Already Taken");
