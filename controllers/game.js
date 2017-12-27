@@ -16,7 +16,8 @@ class Game {
         this.socket.io = io; // required!
         this.status.timer = timer || this.status.timeLimit;
         this.status.round = round || 0;
-        this.status.roundType = null // answer or judging
+        this.status.roundType = null; // answer or judging
+        this.status.currentRound = [];
         this.status.currentImage = currentImage || null;
         this.status.users = users || [];
         this.status.isRunning = isRunning || false;
@@ -47,6 +48,9 @@ class Game {
         if (this.status.currentCaptions.length) {
             this.status.currentCaptions = [];
         }
+        this.status.currentRound = this.status.users.map((user => {
+            return {alias: user.alias, score: 0, caption: ""};
+        }));
         this.status.users.forEach((user) => user.canSubmit = true);
         this.status.users.forEach((user) => user.currentCaption = "");
 
@@ -98,6 +102,22 @@ class Game {
         this.status.roundType = "judge";
         this.status.timer = this.status.timeLimit;
         this.socket.io.sockets.emit("data", this.status)
+        this.status.interval = setInterval(() => {
+            this.status.timer > 0 ? this.increaseTimer() : this.results();
+        }, 1000)
+    }
+
+    results() {
+        if (this.status.interval) {
+            clearInterval(this.status.interval);
+            this.status.interval = null;
+            this.status.timer = 10;
+        }
+        let winner = this.status.currentRound.sort((a, b) => {
+            return a.score - b.score
+        }).reverse()[0];
+
+        this.socket.io.sockets.emit("winner", `${winner.alias} won round ${this.status.round} with ${winner.caption}`)
         this.status.interval = setInterval(() => {
             this.status.timer > 0 ? this.increaseTimer() : this.startRound();
         }, 1000)

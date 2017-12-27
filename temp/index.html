@@ -105,6 +105,10 @@
         }
     })
 
+    socket.on("winner", (data) => {
+        alert(data);
+    })
+
 
     $("#aliasButton").click(function () {
         socket.emit("alias", $("#alias").val())

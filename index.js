@@ -63,8 +63,8 @@ io.on("connection", (socket) => {
                             socket.emit("alias", {success: false, msg: "Alias has already been claimed"})
                         }
                     }
-                    else{
-                        if (game.status.users.length > 0){
+                    else {
+                        if (game.status.users.length > 0) {
                             // theres 1 user, but the game isnt running yet
                             let aliasIndex = game.status.users.findIndex((user) => user.alias == alias);
                             if (aliasIndex == -1) {
@@ -116,6 +116,10 @@ io.on("connection", (socket) => {
         let userIndex = game.status.users.findIndex((user) => user.alias == alias);
         game.status.users[userIndex].score++;
 
+        let roundIndex = game.status.currentRound.findIndex((user) => user.alias == alias);
+        game.status.currentRound[roundIndex].score++;
+        game.status.currentRound[roundIndex].caption = game.status.users[userIndex].currentCaption;
+
         let voterIndex = game.status.users.findIndex((user) => user.id == socket.id);
         game.status.users[voterIndex].canVote = false;
     })
@@ -125,7 +129,7 @@ io.on("connection", (socket) => {
         if (game) {
             // quit the game
             game.status.users = playersController.removePlayer(socket.id)
-            if (io.engine.clientsCount < 1){
+            if (io.engine.clientsCount < 1) {
                 game.endGame();
                 // set the game to an empty initial state
                 game = new Game(io);
