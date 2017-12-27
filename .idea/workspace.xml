@@ -2,18 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="152d04c8-19e1-4ee3-a646-f56177ef7ce5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/images/31.jpg" afterPath="$PROJECT_DIR$/public/images/31.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/images/40.jpg" afterPath="$PROJECT_DIR$/public/images/40.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/images/48.jpg" afterPath="$PROJECT_DIR$/public/images/48.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/images/5.jpg" afterPath="$PROJECT_DIR$/public/images/5.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/images/52.jpg" afterPath="$PROJECT_DIR$/public/images/52.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/images/58.jpg" afterPath="$PROJECT_DIR$/public/images/58.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/preferred-vcs.xml" afterPath="$PROJECT_DIR$/.idea/preferred-vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/captions.js" afterPath="$PROJECT_DIR$/controllers/captions.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/game.js" afterPath="$PROJECT_DIR$/controllers/game.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/players.js" afterPath="$PROJECT_DIR$/controllers/players.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.js" afterPath="$PROJECT_DIR$/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/temp/index.html" afterPath="$PROJECT_DIR$/temp/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -97,7 +88,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="captions.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="captions.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controllers/captions.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="102">
@@ -119,11 +110,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="31" lean-forward="false" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
+            <state relative-caret-position="272">
+              <caret line="16" column="25" lean-forward="true" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -147,15 +138,15 @@
       <find>imagescontroller</find>
       <find>imagesCont</find>
       <find>var</find>
-      <find>when you call</find>
       <find>this.</find>
       <find>starting</find>
       <find>answer</find>
+      <find>when you call</find>
     </findStrings>
     <replaceStrings>
       <replace>log</replace>
-      <replace>let</replace>
       <replace>${JSON.stringify(this)}</replace>
+      <replace>let</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -164,7 +155,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/controllers/images.js" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/controllers/players.js" />
@@ -172,6 +162,7 @@
         <option value="$PROJECT_DIR$/temp/index.html" />
         <option value="$PROJECT_DIR$/index.js" />
         <option value="$PROJECT_DIR$/controllers/captions.js" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -344,22 +335,30 @@
       <option name="presentableId" value="Default" />
       <updated>1514181241708</updated>
       <workItem from="1514181243131" duration="4864000" />
-      <workItem from="1514322725592" duration="23113000" />
+      <workItem from="1514322725592" duration="23200000" />
     </task>
+    <task id="LOCAL-00001" summary="finished webserver mechanics">
+      <created>1514398524079</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1514398524079</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="27977000" />
+    <option name="totallyTimeSpent" value="28064000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="0" width="1294" height="1055" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Debug Logs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329718" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329718" sideWeight="0.50318474" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329718" sideWeight="0.4968153" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329718" sideWeight="0.4968153" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Execute Anonymous" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -402,6 +401,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="finished webserver mechanics" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished webserver mechanics" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -450,14 +453,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="31" lean-forward="false" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
           <folding />
         </state>
       </provider>
@@ -519,6 +514,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/captions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="66" lean-forward="false" selection-start-line="6" selection-start-column="66" selection-end-line="6" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="267">
@@ -529,10 +532,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/controllers/captions.js">
+    <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="66" lean-forward="false" selection-start-line="6" selection-start-column="66" selection-end-line="6" selection-end-column="66" />
+        <state relative-caret-position="272">
+          <caret line="16" column="25" lean-forward="true" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
           <folding />
         </state>
       </provider>
