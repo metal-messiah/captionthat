@@ -52,7 +52,7 @@ let captions = [
     "When your black friend calls you the n-word for the first time",
     "When your parents say you spend too much time on your phone",
     "When the light turned green 0.1 seconds ago and the guy behind you is already beeping",
-    "When you're handing out with a couple and they start fighting",
+    "When you're hanging out with a couple and they start fighting",
     "When you realize you just watched Kylie Jenner make a pancake on Snapchat for 15 minutes",
     "When you see a comma in your bank account",
     "When you hear someone say 'moist'",

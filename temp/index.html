@@ -8,13 +8,16 @@
 <body style="
     box-sizing: border-box;
 ">
+<div id="notStarted">Game is Waiting for More Users</div>
 <div id="image" style="display:none;width:500px;height:500px;background-color:black;"></div>
 <div id="timer" style="display:none;font-size:xx-large;"></div>
 <ol id="scores"></ol>
 <br>
 <div id="submissions" style="display:none;"></div>
 <hr>
-<input id="alias" type="text"><button id="aliasButton">Join</button><br>
+<input id="alias" type="text">
+<button id="aliasButton">Join</button>
+<br>
 <div id="cards" style="display:none;"></div>
 <br>
 <div id="type" style="display:none;"></div>
@@ -27,6 +30,8 @@
     var socket = io();
 
     socket.on("data", (data) => {
+
+        $("#notStarted").hide();
         //console.log(data);
         $("#image").css({
             backgroundImage: `url(${data.currentImage}`,
@@ -90,6 +95,7 @@
     });
 
     socket.on("alias", (data) => {
+        console.log(data);
         if (data.success) {
             $("#image, #timer, #submissions, #cards, #type").show();
         }

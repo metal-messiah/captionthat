@@ -32,7 +32,7 @@ let game = null;
 
 io.on("connection", (socket) => {
     console.log("CONNECT");
-    var total = io.engine.clientsCount;
+    var connectedCount = io.engine.clientsCount;
 
     if (socket.alias) {
         console.log(socket.alias)
@@ -45,27 +45,47 @@ io.on("connection", (socket) => {
             socket.alias = alias;
 
             //socket.emit("joingame",)
-            if (total > 0) {
+            if (connectedCount > 0) {
                 if (game) {
                     // join the existing game
+                    if (game.status.isRunning) {
 
-                    let aliasIndex = game.status.users.findIndex((user) => user.alias == alias);
-                    if (aliasIndex == -1) {
-                        game.status.users = playersController.addPlayer(alias);
-                        let user = game.status.users[game.status.users.findIndex((user) => user.alias == alias)];
-                        socket.id = user.id;
-                        console.log(socket.id)
-                        socket.emit("alias", {success: true, msg: "Alias added to game"})
+                        let aliasIndex = game.status.users.findIndex((user) => user.alias == alias);
+                        if (aliasIndex == -1) {
+                            game.status.users = playersController.addPlayer(alias);
+                            let user = game.status.users[game.status.users.findIndex((user) => user.alias == alias)];
+                            socket.id = user.id;
+                            console.log(socket.id)
+                            socket.emit("alias", {success: true, msg: "Alias added to game"})
+                        }
+                        else {
+                            console.log("ALIAS TAKEN")
+                            socket.emit("alias", {success: false, msg: "Alias has already been claimed"})
+                        }
                     }
-                    else {
-                        console.log("ALIAS TAKEN")
-                        socket.emit("alias", {success: false, msg: "Alias has already been claimed"})
+                    else{
+                        if (game.status.users.length > 0){
+                            // theres 1 user, but the game isnt running yet
+                            let aliasIndex = game.status.users.findIndex((user) => user.alias == alias);
+                            if (aliasIndex == -1) {
+                                game.status.users = playersController.addPlayer(alias);
+                                let user = game.status.users[game.status.users.findIndex((user) => user.alias == alias)];
+                                socket.id = user.id;
+                                console.log(socket.id)
+                                socket.emit("alias", {success: true, msg: "Alias added to game"})
+                            }
+                            else {
+                                console.log("ALIAS TAKEN")
+                                socket.emit("alias", {success: false, msg: "Alias has already been claimed"})
+                            }
+                            game.startGame();
+                        }
                     }
                 }
                 else {
                     // start a new game
                     game = new Game(io);
-                    game.startGame();
+                    //game.startGame();
                     game.status.users = playersController.addPlayer(alias)
                     let user = game.status.users[game.status.users.findIndex((user) => user.alias == alias)];
                     socket.id = user.id;
