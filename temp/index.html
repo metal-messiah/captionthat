@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket.IO Chat Example</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="
+    box-sizing: border-box;
+    display: flex;
+    align-items:  center;
+    justify-content: space-around;
+">
+<div id="image" style="width:500px;height:500px;"></div>
+<div id="timer" style="font-size:xx-large;"></div>
+<hr>
+<input id="alias" type="text"><br>
+<div id="cards"></div>
+<br>
+<div id="type"></div>
+<br>
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+<script>
+    var socket = io();
+
+    socket.on("data", (data) => {
+        console.log(data);
+        $("#image").css({
+            "backgroundImage": `url(${data.currentImage}`,
+            backgroundSize: "contain",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundColor: "blackrr"
+        });
+        $("#timer").html(data.timer);
+        $("#type").html(data.roundType);
+
+        let aliasIndex = data.users.findIndex((user) => user.alias == $("#alias").val());
+        console.log(aliasIndex);
+        if (aliasIndex >= 0) {
+            $("#cards").html("<ul>");
+
+            $("#cards").append(`<li>${data.users[aliasIndex].cards[0]}</li>`);
+            $("#cards").append(`<li>${data.users[aliasIndex].cards[1]}</li>`);
+            $("#cards").append(`<li>${data.users[aliasIndex].cards[2]}</li>`);
+            $("#cards").append(`<li>${data.users[aliasIndex].cards[3]}</li>`);
+            $("#cards").append("</ul>");
+
+        }
+
+    });
+
+
+    $("#alias").click(function () {
+        socket.emit("alias", $(this).val())
+    })
+
+
+</script>
+</body>
+</html>
