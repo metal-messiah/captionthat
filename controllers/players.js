@@ -10,6 +10,9 @@ class Player {
         this.alias = alias;
         this.score = score;
         this.cards = cards;
+        this.canSubmit = true;
+        this.canVote = true;
+        this.currentCaption = "";
     }
 }
 

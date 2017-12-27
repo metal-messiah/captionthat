@@ -20,7 +20,8 @@ class Game {
         this.status.currentImage = currentImage || null;
         this.status.users = users || [];
         this.status.isRunning = isRunning || false;
-        this.status.interval = null
+        this.status.interval = null;
+        this.status.currentCaptions = [];
     }
 
     increaseTimer() {
@@ -43,6 +44,13 @@ class Game {
             this.status.interval = null;
             this.status.timer = this.status.timeLimit;
         }
+        if (this.status.currentCaptions.length) {
+            this.status.currentCaptions = [];
+        }
+        this.status.users.forEach((user) => user.canSubmit = true);
+        this.status.users.forEach((user) => user.currentCaption = "");
+
+
         this.status.round++;
         this.status.roundType = "answer";
         try {
@@ -83,6 +91,10 @@ class Game {
             this.endGame()
             return;
         }
+        this.status.users.forEach((user) => {
+            user.canSubmit = false;
+            user.canVote = true;
+        });
         this.status.roundType = "judge";
         this.status.timer = this.status.timeLimit;
         this.socket.io.sockets.emit("data", this.status)

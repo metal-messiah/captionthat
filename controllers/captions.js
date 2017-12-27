@@ -1,8 +1,6 @@
 /**
  * Created by Porter on 12/24/2017.
  */
-
-
 let captions = [
     "When you're about to leave work and the boss says 'before you go'",
     "When you just wanna text and the person decides to call you",

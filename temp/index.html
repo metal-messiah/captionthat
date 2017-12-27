@@ -7,56 +7,105 @@
 </head>
 <body style="
     box-sizing: border-box;
-    display: flex;
-    align-items:  center;
-    justify-content: space-around;
 ">
-<div id="image" style="width:500px;height:500px;"></div>
-<div id="timer" style="font-size:xx-large;"></div>
+<div id="image" style="display:none;width:500px;height:500px;background-color:black;"></div>
+<div id="timer" style="display:none;font-size:xx-large;"></div>
+<ol id="scores"></ol>
+<br>
+<div id="submissions" style="display:none;"></div>
 <hr>
 <input id="alias" type="text"><br>
-<div id="cards"></div>
+<div id="cards" style="display:none;"></div>
 <br>
-<div id="type"></div>
+<div id="type" style="display:none;"></div>
 <br>
 
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 <script>
+
     var socket = io();
 
     socket.on("data", (data) => {
-        console.log(data);
+        //console.log(data);
         $("#image").css({
-            "backgroundImage": `url(${data.currentImage}`,
+            backgroundImage: `url(${data.currentImage}`,
             backgroundSize: "contain",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            backgroundColor: "blackrr"
+            backgroundColor: "black"
         });
         $("#timer").html(data.timer);
         $("#type").html(data.roundType);
+        if ($("#submissions").html()) {
+            $("#submissions").html("");
+        }
+
+        let scores = []
+        for (user of data.users) {
+            scores.push({score: user.score, alias: user.alias});
+        }
+        scores.sort((a, b) => {
+            return a.score - b.score
+        });
+        scores.reverse();
+        $("#scores").html("");
+        scores.forEach(score => {
+            $("#scores").append(`<li>${score.alias} - ${score.score}`)
+        })
+
 
         let aliasIndex = data.users.findIndex((user) => user.alias == $("#alias").val());
-        console.log(aliasIndex);
-        if (aliasIndex >= 0) {
-            $("#cards").html("<ul>");
+        var me = data.users[aliasIndex];
 
-            $("#cards").append(`<li>${data.users[aliasIndex].cards[0]}</li>`);
-            $("#cards").append(`<li>${data.users[aliasIndex].cards[1]}</li>`);
-            $("#cards").append(`<li>${data.users[aliasIndex].cards[2]}</li>`);
-            $("#cards").append(`<li>${data.users[aliasIndex].cards[3]}</li>`);
-            $("#cards").append("</ul>");
+        if (data.roundType == "answer") {
+            $("#submissions").append(`${me.currentCaption}`)
+        }
+        else {
+            if (me.canVote) {
+                $.each(data.currentCaptions, (i, v) => {
+                    if (v.alias != me.alias) {
+                        $("#submissions").append(`${v.caption} <button onclick="sendVote('${v.alias}')">Vote</button>`)
+                    }
+                })
+            }
+            else {
+                // do nothing
+
+            }
+        }
+
+        //console.log(aliasIndex);
+        let display = me.canSubmit ? $("#cards").show() : $("#cards").hide();
+
+        if (aliasIndex >= 0) {
+            $("#cards").html("");
+            $("#cards").append(`<li onclick="sendCaption(this.innerHTML)">${me.cards[0]}</li>`);
+            $("#cards").append(`<li onclick="sendCaption(this.innerHTML)">${me.cards[1]}</li>`);
+            $("#cards").append(`<li onclick="sendCaption(this.innerHTML)">${me.cards[2]}</li>`);
+            $("#cards").append(`<li onclick="sendCaption(this.innerHTML)">${me.cards[3]}</li>`);
 
         }
 
     });
+
+    socket.on("alias", (data) => {
+        if (data.success) {
+            $("#image, #timer, #submissions, #cards, #type").show();
+        }
+        else {
+            alert("Username Already Taken");
+        }
+    })
 
 
     $("#alias").click(function () {
         socket.emit("alias", $(this).val())
     })
 
+
+    let sendCaption = (caption) => socket.emit("caption", caption);
+    let sendVote = (vote) => socket.emit("vote", vote);
 
 </script>
 </body>
