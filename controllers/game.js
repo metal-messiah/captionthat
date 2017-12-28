@@ -26,13 +26,17 @@ class Game {
     }
 
     increaseTimer() {
-        if (!this.status.isRunning) {
-            this.endGame()
-            return;
+        if (this.status.users.length > 1) {
+            if (!this.status.isRunning) {
+                this.endGame()
+                return;
+            }
+            this.socket.io.sockets.emit("data", this.status);
+            this.status.timer--;
         }
-        this.socket.io.sockets.emit("data", this.status);
-        this.status.timer--;
-
+        else {
+            this.endGame();
+        }
     }
 
     startRound() {
@@ -48,6 +52,9 @@ class Game {
         if (this.status.currentCaptions.length) {
             this.status.currentCaptions = [];
         }
+        this.status.users.forEach((user) => {
+            user.canVote = false;
+        });
         this.status.currentRound = this.status.users.map((user => {
             return {alias: user.alias, score: 0, caption: ""};
         }));
@@ -100,7 +107,7 @@ class Game {
             user.canVote = true;
         });
         this.status.roundType = "judge";
-        this.status.timer = this.status.timeLimit;
+        this.status.timer = 20;
         this.socket.io.sockets.emit("data", this.status)
         this.status.interval = setInterval(() => {
             this.status.timer > 0 ? this.increaseTimer() : this.results();
@@ -113,6 +120,9 @@ class Game {
             this.status.interval = null;
             this.status.timer = 10;
         }
+        this.status.users.forEach((user) => {
+            user.canVote = false;
+        });
         let winner = this.status.currentRound.sort((a, b) => {
             return a.score - b.score
         }).reverse()[0];
@@ -136,6 +146,23 @@ class Game {
             this.status.interval = null;
         }
         this.socket.io.sockets.emit("data", this.status);
+
+        //reset to default
+        this.status = {};
+        //constants
+        this.status.roundLimit = 10; //number of rounds
+        this.status.timeLimit = 30; //seconds
+
+        this.status.timer = this.status.timeLimit;
+        this.status.round = 0;
+        this.status.roundType = null; // answer or judging
+        this.status.currentRound = [];
+        this.status.currentImage = null;
+        this.status.users = [];
+        this.status.isRunning = false;
+        this.status.interval = null;
+        this.status.currentCaptions = [];
+
     }
 
 }

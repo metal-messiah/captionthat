@@ -4,7 +4,7 @@
 let express = require('express');
 let webserver = express();
 let http = require('http').Server(webserver);
-let port = process.env.PORT || 3000;
+let port = process.env.PORT || 3001;
 let io = require('socket.io')(http);
 let bodyParser = require('body-parser');
 let httpRequest = require('request');
@@ -42,29 +42,35 @@ io.on("connection", (socket) => {
     socket.on("alias", (alias) => {
         console.log(alias)
         if (alias) {
+            console.log("alias is true")
             socket.alias = alias;
 
             //socket.emit("joingame",)
             if (connectedCount > 0) {
+                console.log("connected is > 0")
                 if (game) {
+                    console.log("game exists")
                     // join the existing game
                     if (game.status.isRunning) {
-
+                        console.log("game is running")
                         let aliasIndex = game.status.users.findIndex((user) => user.alias == alias);
                         if (aliasIndex == -1) {
+                            console.log("alias doesnt exist")
                             game.status.users = playersController.addPlayer(alias);
                             let user = game.status.users[game.status.users.findIndex((user) => user.alias == alias)];
                             socket.id = user.id;
                             console.log(socket.id)
-                            socket.emit("alias", {success: true, msg: "Alias added to game"})
+                            socket.emit("alias", {success: true, msg: "Alias added to game", alias: alias})
                         }
                         else {
                             console.log("ALIAS TAKEN")
-                            socket.emit("alias", {success: false, msg: "Alias has already been claimed"})
+                            socket.emit("alias", {success: false, msg: "Alias has already been claimed", alias: alias})
                         }
                     }
                     else {
+                        console.log("game is NOT running")
                         if (game.status.users.length > 0) {
+                            console.log("game has 1 user already")
                             // theres 1 user, but the game isnt running yet
                             let aliasIndex = game.status.users.findIndex((user) => user.alias == alias);
                             if (aliasIndex == -1) {
@@ -72,13 +78,36 @@ io.on("connection", (socket) => {
                                 let user = game.status.users[game.status.users.findIndex((user) => user.alias == alias)];
                                 socket.id = user.id;
                                 console.log(socket.id)
-                                socket.emit("alias", {success: true, msg: "Alias added to game"})
+                                socket.emit("alias", {success: true, msg: "Alias added to game", alias: alias})
                             }
                             else {
                                 console.log("ALIAS TAKEN")
-                                socket.emit("alias", {success: false, msg: "Alias has already been claimed"})
+                                socket.emit("alias", {
+                                    success: false,
+                                    msg: "Alias has already been claimed",
+                                    alias: alias
+                                })
                             }
                             game.startGame();
+                        }
+                        else {
+                            console.log("game has no users")
+                            let aliasIndex = game.status.users.findIndex((user) => user.alias == alias);
+                            if (aliasIndex == -1) {
+                                game.status.users = playersController.addPlayer(alias);
+                                let user = game.status.users[game.status.users.findIndex((user) => user.alias == alias)];
+                                socket.id = user.id;
+                                console.log(socket.id)
+                                socket.emit("alias", {success: true, msg: "Alias added to game", alias: alias})
+                            }
+                            else {
+                                console.log("ALIAS TAKEN")
+                                socket.emit("alias", {
+                                    success: false,
+                                    msg: "Alias has already been claimed",
+                                    alias: alias
+                                })
+                            }
                         }
                     }
                 }
@@ -90,7 +119,7 @@ io.on("connection", (socket) => {
                     let user = game.status.users[game.status.users.findIndex((user) => user.alias == alias)];
                     socket.id = user.id;
                     console.log(socket.id)
-                    socket.emit("alias", {success: true, msg: "Alias added to game"})
+                    socket.emit("alias", {success: true, msg: "Alias added to game", alias: alias})
                 }
             }
         }
@@ -114,14 +143,20 @@ io.on("connection", (socket) => {
         //alias, caption
         let alias = vote;
         let userIndex = game.status.users.findIndex((user) => user.alias == alias);
-        game.status.users[userIndex].score++;
+        if (userIndex != -1) {
+            game.status.users[userIndex].score++;
+        }
 
         let roundIndex = game.status.currentRound.findIndex((user) => user.alias == alias);
-        game.status.currentRound[roundIndex].score++;
-        game.status.currentRound[roundIndex].caption = game.status.users[userIndex].currentCaption;
+        if (roundIndex != -1) {
+            game.status.currentRound[roundIndex].score++;
+            game.status.currentRound[roundIndex].caption = game.status.users[userIndex].currentCaption;
+        }
 
         let voterIndex = game.status.users.findIndex((user) => user.id == socket.id);
-        game.status.users[voterIndex].canVote = false;
+        if (voterIndex != -1) {
+            game.status.users[voterIndex].canVote = false;
+        }
     })
 
 
