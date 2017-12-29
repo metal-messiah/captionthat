@@ -6,14 +6,14 @@ var imagesController = require(__dirname + "/images.js");
 //console.log(imagesController)
 
 class Game {
-    constructor(io, timer, round, currentImage, users, isRunning) {
+    constructor(channel, timer, round, currentImage, users, isRunning) {
         this.socket = {};
         this.status = {};
         //constants
         this.status.roundLimit = 10; //number of rounds
         this.status.timeLimit = 30; //seconds
 
-        this.socket.io = io; // required!
+        this.socket.channel = channel; // required!
         this.status.timer = timer || this.status.timeLimit;
         this.status.round = round || 0;
         this.status.roundType = null; // answer or judging
@@ -31,7 +31,8 @@ class Game {
                 this.endGame()
                 return;
             }
-            this.socket.io.sockets.emit("data", this.status);
+
+            this.socket.channel.emit("data", this.status);
             this.status.timer--;
         }
         else {
@@ -70,7 +71,7 @@ class Game {
         catch (err) {
             console.log(err);
         }
-        this.socket.io.sockets.emit("data", this.status);
+        this.socket.channel.emit("data", this.status);
         this.status.interval = setInterval(() => {
             this.status.timer > 0 ? this.increaseTimer() : this.endRound();
         }, 1000)
@@ -81,7 +82,7 @@ class Game {
             this.endGame()
             return;
         }
-        this.socket.io.sockets.emit("data", this.status)
+        this.socket.channel.emit("data", this.status)
         if (this.status.round < this.status.roundLimit) {
             //this.round++;
             this.status.timer = this.status.timeLimit;
@@ -108,7 +109,7 @@ class Game {
         });
         this.status.roundType = "judge";
         this.status.timer = 20;
-        this.socket.io.sockets.emit("data", this.status)
+        this.socket.channel.emit("data", this.status)
         this.status.interval = setInterval(() => {
             this.status.timer > 0 ? this.increaseTimer() : this.results();
         }, 1000)
@@ -127,14 +128,15 @@ class Game {
             return a.score - b.score
         }).reverse()[0];
 
-        this.socket.io.sockets.emit("winner", `${winner.alias} won round ${this.status.round} with ${winner.caption}`)
+        this.socket.channel.emit("winner", `${winner.alias} won round ${this.status.round} with ${winner.caption}`)
         this.status.interval = setInterval(() => {
             this.status.timer > 0 ? this.increaseTimer() : this.startRound();
         }, 1000)
     }
 
     startGame() {
-        this.socket.io.sockets.emit("data", this.status)
+        console.log("START THE GAME")
+        this.socket.channel.emit("data", this.status)
         this.status.isRunning = true;
         this.startRound();
     }
@@ -145,7 +147,7 @@ class Game {
             clearInterval(this.status.interval);
             this.status.interval = null;
         }
-        this.socket.io.sockets.emit("data", this.status);
+        this.socket.channel.emit("data", this.status);
 
         //reset to default
         this.status = {};

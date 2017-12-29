@@ -29,8 +29,8 @@ let addPlayer = (alias, score, cards) => {
         newID = 0
     }
 
-    players.push(new Player(newID, alias, score, cards));
-    return players;
+
+    return new Player(newID, alias, score, cards);
 };
 
 let removePlayer = (id) => {

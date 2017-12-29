@@ -27,7 +27,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 <script>
 
-    var socket = io();
+    var url = new URL(window.location.href);
+    var gameroom = url.searchParams.get("gameroom");
+    console.log(gameroom)
+
+    var socket = io(`http://localhost:3001/${gameroom}`);
 
     socket.on("data", (data) => {
 
