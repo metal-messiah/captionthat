@@ -188,7 +188,7 @@ webserver.post("/api/game", (req, res) => {
                         gamerooms[name].game.status.currentRound[roundIndex].caption = gamerooms[name].game.status.users[userIndex].currentCaption;
                     }
 
-                    let voterIndex = gamerooms[name].game.status.users.findIndex((user) => user.id == socket.id);
+                    let voterIndex = gamerooms[name].game.status.users.findIndex((user) => user.alias == socket.alias);
                     if (voterIndex != -1) {
                         gamerooms[name].game.status.users[voterIndex].canVote = false;
                     }
