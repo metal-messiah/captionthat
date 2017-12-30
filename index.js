@@ -153,9 +153,11 @@ webserver.post("/api/game", (req, res) => {
                 }
             })
             socket.on("caption", (caption) => {
+                console.log("CAPTION - "+caption)
                 if (gamerooms[name].game) {
-                    let userIndex = gamerooms[name].game.status.users.findIndex((user) => user.id == socket.id);
+                    let userIndex = gamerooms[name].game.status.users.findIndex((user) => user.alias == socket.alias);
                     let user = gamerooms[name].game.status.users[userIndex];
+                    console.log(user)
                     gamerooms[name].game.status.currentCaptions.push({alias: user.alias, caption: caption});
 
                     gamerooms[name].game.status.users[userIndex].canSubmit = false;
