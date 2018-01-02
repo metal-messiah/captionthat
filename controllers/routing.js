@@ -1,42 +1,15 @@
 /**
- * Created by Porter on 12/24/2017.
+ * Created by Porter on 1/1/2018.
  */
-let express = require('express');
-let webserver = express();
-let http = require('http').Server(webserver);
-let port = process.env.PORT || 3001;
-let io = require('socket.io')(http);
-let bodyParser = require('body-parser');
-let httpRequest = require('request');
-let fs = require('fs');
-let cors = require('cors');
-let path = require('path');
+const path = require('path')
+let root = path.dirname(require.main.filename);
+let {game, gamerooms} = require("/index.js");
 
-// controllers
-let captionsController = require(__dirname + "/controllers/captions.js");
-let playersController = require(__dirname + "/controllers/players.js");
-let imagesController = require(__dirname + "/controllers/images.js");
-let {Game} = require(__dirname + "/controllers/game.js");
+const catchAll = (req, res) => {
+    res.send("API End Points<hr>/api/game (get/post)<br>/api/game/:gameroom (get/delete)<br>")
+}
 
-
-webserver.use(bodyParser.json({limit: "50mb"}));
-webserver.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit: 50000}));
-webserver.use(cors());
-
-webserver.use('/public', express.static(path.join(__dirname, 'public')));
-
-// we could add an array of sockets for handling more people
-//let gameroom = io.of('/gameroom');
-
-let game = null;
-let gamerooms = {};
-
-
-webserver.get("/", (req, res) => {
-    res.send("End Points<hr>/api/game (get/post)<br>/api/game/:gameroom (get/delete)<br>")
-})
-
-webserver.post("/api/game", (req, res) => {
+const postGame = (req, res) => {
     let {name} = req.body;
     console.log(name)
     if (gamerooms[name]) {
@@ -295,13 +268,13 @@ webserver.post("/api/game", (req, res) => {
             gamerooms: Object.keys(gamerooms)
         })
     }
-})
+};
 
-webserver.get("/api/game/", (req, res) => {
+const getGame = (req, res) => {
     res.send({success: true, msg: `All game rooms returned`, gamerooms: Object.keys(gamerooms)})
-})
+};
 
-webserver.get("/api/game/:gameroom", (req, res) => {
+const getGameroom = (req, res) => {
     let {gameroom} = req.params;
     if (gamerooms[gameroom]) {
         console.log("GAME EXISTS -- RETURN IT")
@@ -314,9 +287,9 @@ webserver.get("/api/game/:gameroom", (req, res) => {
     else {
         res.send({success: false, msg: `No game room found under the alias ${gameroom}`})
     }
-})
+};
 
-webserver.delete("/api/game/:gameroom", (req, res) => {
+const deleteGameroom = (req, res) => {
     let {gameroom} = req.params;
     if (gamerooms[gameroom]) {
         console.log("GAME EXISTS -- REMOVE IT")
@@ -333,68 +306,24 @@ webserver.delete("/api/game/:gameroom", (req, res) => {
     else {
         res.send({success: false, msg: `No game room found under the alias ${gameroom}`})
     }
-})
+};
 
-webserver.get('/api/cards/draw', function (req, res) {
+const drawCard = (req, res) => {
     let draw = captionsController.draw();
     res.send(`${draw.randomCard} - ${draw.captions.length} Cards In Deck - ${draw.usedCaptions.length} Cards Have Been Used`);
-})
+}
 
-webserver.get('/api/cards/start', function (req, res) {
+const startingHand = (req, res) => {
     let startingHand = captionsController.startingHand();
     res.send(`${startingHand}`);
-})
+};
 
-//listen for requests
-http.listen(port, function () {
-    console.log('listening on ' + port);
-});
-
-/*webserver.post('/api/game/join', function (req, res) {
- try {
- let {alias} = req.body;
- let players = playersController.addPlayer(alias);
- gameroom.emit("join", players);
- res.send({success: true});
- }
- catch (err) {
- res.send({success: false})
- }
- })*/
-
-/*webserver.get('/api/game/start', function (req, res) {
- try {
-
- game.startGame();
- console.log("TEST")
- res.send({success: true})
- }
- catch (err) {
- res.send({success: false, msg: err})
- }
- })*/
-
-
-/*webserver.get('/api/players', function (req, res) {
- let players = playersController.players;
- res.send(`${players}`);
- })
-
- webserver.post('/api/players', function (req, res) {
- let {alias} = req.body;
- let players = playersController.addPlayer(alias);
- res.send(JSON.stringify(players));
- })
-
- webserver.delete('/api/players', function (req, res) {
- let {id} = req.body;
- let players = playersController.removePlayer(id);
- res.send(JSON.stringify(players));
- })
-
- webserver.put('/api/players', function (req, res) {
- let {id} = req.body;
- let players = playersController.removePlayer(id);
- res.send(JSON.stringify(players));
- })*/
-
+module.exports = {
+    catchAll,
+    postGame,
+    getGame,
+    getGameroom,
+    deleteGameroom,
+    drawCard,
+    startingHand
+}
