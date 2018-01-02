@@ -53,7 +53,8 @@ webserver.post("/api/game", (req, res) => {
         let channel = io.of(`/${name}`);
         gamerooms[name] = {game: new Game(channel), channel: channel}
         console.log("CREATE GAME ROOM CHANNEL")
-        gamerooms[name].channel.on("connection", (socket) => {
+        console.log(gamerooms[name].game)
+        io.of(`/${name}`).on("connection", (socket) => {
             console.log("CONNECT");
             var connectedCount = io.engine.clientsCount;
             //console.log(`${connectedCount} users connected to ${name}`);
@@ -64,6 +65,7 @@ webserver.post("/api/game", (req, res) => {
                 console.log(socket.alias)
             }
             socket.on("alias", (alias) => {
+                console.log(io.nsps);
                 console.log(alias)
                 if (alias) {
                     console.log("alias is true")
@@ -77,36 +79,95 @@ webserver.post("/api/game", (req, res) => {
                             // join the existing game
                             if (gamerooms[name].game.status.isRunning) {
                                 console.log("game is running")
-                                let aliasIndex = gamerooms[name].game.status.users.findIndex((user) => user.alias == alias);
-                                if (aliasIndex == -1) {
-                                    console.log("alias doesnt exist")
-                                    gamerooms[name].game.status.users.push(playersController.addPlayer(alias));
-                                    let user = gamerooms[name].game.status.users[gamerooms[name].game.status.users.findIndex((user) => user.alias == alias)];
-                                    socket.id = user.id;
-                                    console.log(socket.id)
-                                    socket.emit("alias", {success: true, msg: "Alias added to game", alias: alias})
+                                if (connectedCount >= 2) {
+                                    let aliasIndex = gamerooms[name].game.status.users.findIndex((user) => user.alias == alias);
+                                    if (aliasIndex == -1) {
+                                        console.log("alias doesnt exist")
+                                        gamerooms[name].game.status.users.push(playersController.addPlayer(alias));
+                                        let user = gamerooms[name].game.status.users[gamerooms[name].game.status.users.findIndex((user) => user.alias == alias)];
+                                        socket.id = user.id;
+                                        console.log(socket.id)
+                                        socket.emit("alias", {success: true, msg: "Alias added to game", alias: alias})
+                                    }
+                                    else {
+                                        console.log(gamerooms[name].game.status.users);
+                                        console.log("ALIAS TAKEN")
+                                        socket.emit("alias", {
+                                            success: false,
+                                            msg: "Alias has already been claimed",
+                                            alias: alias
+                                        })
+                                    }
                                 }
                                 else {
-                                    console.log("ALIAS TAKEN")
-                                    socket.emit("alias", {
-                                        success: false,
-                                        msg: "Alias has already been claimed",
-                                        alias: alias
-                                    })
+                                    console.log("game is running with < 2 users... uh oh")
+                                    if (gamerooms[name].game.status.users.length > 0) {
+                                        console.log("game has 1 user already")
+                                        // theres 1 user, but the game isnt running yet
+                                        let aliasIndex = gamerooms[name].game.status.users.findIndex((user) => user.alias == alias);
+                                        if (aliasIndex == -1) {
+                                            gamerooms[name].game.status.users.push(playersController.addPlayer(alias));
+                                            let user = gamerooms[name].game.status.users[gamerooms[name].game.status.users.findIndex((user) => user.alias == alias)];
+                                            socket.id = user.id;
+                                            console.log(socket.id)
+                                            socket.emit("alias", {
+                                                success: true,
+                                                msg: "Alias added to game",
+                                                alias: alias
+                                            })
+                                        }
+                                        else {
+                                            console.log("ALIAS TAKEN")
+                                            socket.emit("alias", {
+                                                success: false,
+                                                msg: "Alias has already been claimed",
+                                                alias: alias
+                                            })
+                                        }
+                                        gamerooms[name].game.startGame();
+                                    }
+                                    else {
+                                        console.log("game has no users")
+                                        let aliasIndex = gamerooms[name].game.status.users.findIndex((user) => user.alias == alias);
+                                        if (aliasIndex == -1) {
+                                            gamerooms[name].game.status.users.push(playersController.addPlayer(alias));
+                                            let user = gamerooms[name].game.status.users[gamerooms[name].game.status.users.findIndex((user) => user.alias == alias)];
+                                            socket.id = user.id;
+                                            console.log(socket.id)
+                                            socket.emit("alias", {
+                                                success: true,
+                                                msg: "Alias added to game",
+                                                alias: alias
+                                            })
+                                        }
+                                        else {
+                                            console.log("ALIAS TAKEN")
+                                            socket.emit("alias", {
+                                                success: false,
+                                                msg: "Alias has already been claimed",
+                                                alias: alias
+                                            })
+                                        }
+                                    }
                                 }
                             }
                             else {
                                 console.log("game is NOT running")
+                                console.log(gamerooms[name].game.status.users)
                                 if (gamerooms[name].game.status.users.length > 0) {
                                     console.log("game has 1 user already")
                                     // theres 1 user, but the game isnt running yet
+                                    console.log(alias)
+                                    console.log(gamerooms[name].game.status.users)
                                     let aliasIndex = gamerooms[name].game.status.users.findIndex((user) => user.alias == alias);
+                                    console.log(aliasIndex);
                                     if (aliasIndex == -1) {
                                         gamerooms[name].game.status.users.push(playersController.addPlayer(alias));
                                         let user = gamerooms[name].game.status.users[gamerooms[name].game.status.users.findIndex((user) => user.alias == alias)];
                                         socket.id = user.id;
                                         console.log(socket.id)
                                         socket.emit("alias", {success: true, msg: "Alias added to game", alias: alias})
+                                        gamerooms[name].game.startGame();
                                     }
                                     else {
                                         console.log("ALIAS TAKEN")
@@ -116,9 +177,10 @@ webserver.post("/api/game", (req, res) => {
                                             alias: alias
                                         })
                                     }
-                                    gamerooms[name].game.startGame();
+
                                 }
                                 else {
+                                    console.log(gamerooms[name].game)
                                     console.log("game has no users")
                                     let aliasIndex = gamerooms[name].game.status.users.findIndex((user) => user.alias == alias);
                                     if (aliasIndex == -1) {
@@ -153,7 +215,7 @@ webserver.post("/api/game", (req, res) => {
                 }
             })
             socket.on("caption", (caption) => {
-                console.log("CAPTION - "+caption)
+                console.log("CAPTION - " + caption)
                 if (gamerooms[name].game) {
                     let userIndex = gamerooms[name].game.status.users.findIndex((user) => user.alias == socket.alias);
                     let user = gamerooms[name].game.status.users[userIndex];
@@ -202,18 +264,27 @@ webserver.post("/api/game", (req, res) => {
                 if (gamerooms[name].game) {
                     // quit the game
                     gamerooms[name].game.status.users = playersController.removePlayer(socket.id)
-                    if (io.engine.clientsCount < 2) {
+                    if (Object.keys(gamerooms[name].channel.connected).length < 2) {
                         gamerooms[name].game.endGame();
                         // set the game to an empty initial state
                         gamerooms[name].game = null;
+
+                        delete gamerooms[name];
+                        const MyNamespace = io.of(name); // Get Namespace
+                        const connectedNameSpaceSockets = Object.keys(MyNamespace.connected); // Get Object with Connected SocketIds as properties
+                        connectedNameSpaceSockets.forEach(socketId => {
+                            MyNamespace.connected[socketId].disconnect(); // Disconnect Each socket
+                        });
+                        MyNamespace.removeAllListeners(); // Remove all Listeners for the event emitter
+                        delete io.nsps[name]; // Remove from the server namespaces
 
                         socket.emit("end", "Game Has Ended")
                     }
                 }
             });
             socket.on('reconnect', function () {
-                var total = io.engine.clientsCount;
-                console.log(total + " users left on " + name);
+                let connected = Object.keys(gamerooms[name].channel.connected).length
+                console.log(connected + " users left on " + name);
             });
         })
         console.log("send response")
@@ -234,7 +305,11 @@ webserver.get("/api/game/:gameroom", (req, res) => {
     let {gameroom} = req.params;
     if (gamerooms[gameroom]) {
         console.log("GAME EXISTS -- RETURN IT")
-        res.send({success: true, msg: `Game room ${gameroom} exists`})
+        res.send({
+            success: true,
+            msg: `Game room ${gameroom} exists`,
+            users: gamerooms[gameroom].game.status.users.map((user) => user.alias)
+        })
     }
     else {
         res.send({success: false, msg: `No game room found under the alias ${gameroom}`})
@@ -246,42 +321,19 @@ webserver.delete("/api/game/:gameroom", (req, res) => {
     if (gamerooms[gameroom]) {
         console.log("GAME EXISTS -- REMOVE IT")
         delete gamerooms[gameroom];
+        const MyNamespace = io.of(name); // Get Namespace
+        const connectedNameSpaceSockets = Object.keys(MyNamespace.connected); // Get Object with Connected SocketIds as properties
+        connectedNameSpaceSockets.forEach(socketId => {
+            MyNamespace.connected[socketId].disconnect(); // Disconnect Each socket
+        });
+        MyNamespace.removeAllListeners(); // Remove all Listeners for the event emitter
+        delete io.nsps[name];
         res.send({success: true, msg: `Game room ${gameroom} was found and removed`})
     }
     else {
         res.send({success: false, msg: `No game room found under the alias ${gameroom}`})
     }
 })
-
-
-webserver.get("/api/users/:alias", (req, res) => {
-    let {alias}= req.params;
-    console.log(alias)
-    if (game && alias) {
-        let index = game.status.users.findIndex((user) => user.alias.toLowerCase() == alias.toLowerCase());
-        if (index != -1) {
-            res.send({success: true, user: game.status.users[index], msg: "User Found Successfully"})
-        }
-        else {
-            res.send({success: false, user: null, msg: "User Does Not Exist in Game"})
-        }
-    }
-    else {
-        res.send({success: false, user: null, msg: "Game Has Not Started -OR- ID Was Invalid"})
-    }
-});
-
-webserver.get("/api/users/", (req, res) => {
-    if (game) {
-
-        res.send({success: true, users: game.status.users, msg: "All users returned"})
-
-    }
-    else {
-        res.send({success: false, users: null, msg: "Game Has Not Started (No Users)"})
-    }
-})
-
 
 webserver.get('/api/cards/draw', function (req, res) {
     let draw = captionsController.draw();
